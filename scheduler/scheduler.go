@@ -2,7 +2,7 @@ package scheduler
 
 import (
 	"context"
-
+	"encoding/json"
 	"golang.org/x/xerrors"
 	v1 "k8s.io/api/core/v1"
 	clientset "k8s.io/client-go/kubernetes"
@@ -166,6 +166,13 @@ func convertConfigurationForSimulator(versioned *v1beta2config.KubeSchedulerConf
 	versioned = defaultCfg
 
 	v1beta2.SetDefaults_KubeSchedulerConfiguration(versioned)
+
+	versionedcfgJSON, err := json.MarshalIndent(versioned, "", "\t")
+	if err != nil {
+		return nil, xerrors.Errorf("MYYY can't marshal config: %w", err)
+	}
+	klog.Infof("---\n---\n---\nStart scheduler with configuration: \n%s---\n---\n", string(versionedcfgJSON))
+
 	cfg := config.KubeSchedulerConfiguration{}
 	if err := scheme.Scheme.Convert(versioned, &cfg, nil); err != nil {
 		return nil, xerrors.Errorf("convert configuration: %w", err)

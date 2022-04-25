@@ -155,24 +155,24 @@ func NewPluginConfig(pc []v1beta2.PluginConfig) ([]v1beta2.PluginConfig, error) 
 func ConvertForSimulator(pls *v1beta2.Plugins) (*v1beta2.Plugins, error) {
 	newpls := pls.DeepCopy()
 	// true means the plugin is disabled
-	disabledMapForScore := map[string]bool{}
-	for _, p := range pls.Score.Disabled {
-		disabledMapForScore[p.Name] = true
-	}
-	if !disabledMapForScore["*"] {
-		// user wants not to disable all plugin.
-		defaultscorepls, err := defaultconfig.DefaultScorePlugins()
-		if err != nil {
-			return nil, xerrors.Errorf("get default score plugins: %w", err)
-		}
-		var retscorepls []v1beta2.Plugin
-		for _, dp := range defaultscorepls {
-			if !disabledMapForScore[dp.Name] {
-				retscorepls = append(retscorepls, v1beta2.Plugin{Name: pluginName(dp.Name), Weight: dp.Weight})
-			}
-		}
-		newpls.Score.Enabled = retscorepls
-	}
+	//disabledMapForScore := map[string]bool{}
+	//for _, p := range pls.Score.Disabled {
+	//	disabledMapForScore[p.Name] = true
+	//}
+	//if !disabledMapForScore["*"] {
+	//	// user wants not to disable all plugin.
+	//	defaultscorepls, err := defaultconfig.DefaultScorePlugins()
+	//	if err != nil {
+	//		return nil, xerrors.Errorf("get default score plugins: %w", err)
+	//	}
+	//	var retscorepls []v1beta2.Plugin
+	//	for _, dp := range defaultscorepls {
+	//		if !disabledMapForScore[dp.Name] {
+	//			retscorepls = append(retscorepls, v1beta2.Plugin{Name: pluginName(dp.Name), Weight: dp.Weight})
+	//		}
+	//	}
+	//	newpls.Score.Enabled = retscorepls
+	//}
 
 	// disable default plugins whatever scheduler configuration value is
 	newpls.Score.Disabled = []v1beta2.Plugin{
